@@ -64,6 +64,17 @@ def go(config: DictConfig):
             )
 
         if "data_check" in active_steps:
+            mlflow.run(
+            os.path.join(hydra.utils.get_original_cwd(),'src','data_check'),
+            entry_point = 'main',
+            parameters={
+                'csv': 'clean_sample.csv:latest', #input csv file per instructions
+                'ref': 'clean_sample.csv:reference', #reference csv to compare per instructions
+                'kl_threshold': config['data_check']['kl_threshold'], #pulling k1 from config
+                'min_price': config['etl']['min_price'], #pulling from config.yaml
+                'max_price': config['etl']['max_price'], #pulling from config.yaml                    
+                }
+            )
             ##################
             # Implement here #
             ##################
