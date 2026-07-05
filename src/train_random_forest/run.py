@@ -98,7 +98,7 @@ def go(args):
     # HINT: use mlflow.sklearn.save_model
     mlflow.sklearn.save_model( #source: https://mlflow.org/docs/latest/api_reference/python_api/mlflow.sklearn.html
         sk_pipe, 
-        random_forest_dir,
+        path = 'random_forest_dir',
         input_example = X_train.iloc[:5]
     )
     ######################################
@@ -120,6 +120,7 @@ def go(args):
     ######################################
     # Here we save variable r_squared under the "r2" key
     run.summary['r2'] = r_squared
+    run.summary['mae'] = mae
     # Now save the variable mae under the key "mae".
     # YOUR CODE HERE
     ######################################
@@ -163,7 +164,9 @@ def get_inference_pipeline(rf_config, max_tfidf_features):
     # Build a pipeline with two steps:
     # 1 - A SimpleImputer(strategy="most_frequent") to impute missing values
     # 2 - A OneHotEncoder() step to encode the variable
-    non_ordinal_categorical_preproc = make_pipeline(
+    non_ordinal_categorical_preproc = make_pipeline( #https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html
+        SimpleImputer(missing_values=np.nan, strategy = 'most_frequent'), #https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html
+        OneHotEncoder(handle_unknown = 'ignore') #https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html
         # YOUR CODE HERE
     )
     ######################################
@@ -227,6 +230,8 @@ def get_inference_pipeline(rf_config, max_tfidf_features):
 
     sk_pipe = Pipeline(
         steps =[
+            ('preprocessor',preprocessor),
+            ('random_forest',random_forest) #did not unpack the model here like the learning material as it was done in prior step
         # YOUR CODE HERE
         ]
     )
