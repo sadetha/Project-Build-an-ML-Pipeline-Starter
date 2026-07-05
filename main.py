@@ -75,16 +75,17 @@ def go(config: DictConfig):
                 'max_price': config['etl']['max_price'], #pulling from config.yaml                    
                 }
             )
-            ##################
-            # Implement here #
-            ##################
-            pass
 
         if "data_split" in active_steps:
-            ##################
-            # Implement here #
-            ##################
-            pass
+            mlflow.run(
+            f"{config['main']['components_repository']}/train_val_test_split",'main', #course provided
+            parameters = {
+                'input': 'clean_sample.csv:latest', #input csv file
+                'test_size': config['modeling']['test_size'],
+                'random_seed': config['modeling']['random_seed'],
+                'stratify_by': config['modeling']['stratify_by']
+            }
+            )
 
         if "train_random_forest" in active_steps:
 

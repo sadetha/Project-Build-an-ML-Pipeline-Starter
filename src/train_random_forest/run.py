@@ -66,12 +66,13 @@ def go(args):
 
     logger.info("Preparing sklearn pipeline")
 
-    sk_pipe, processed_features = get_inference_pipeline(rf_config, args.max_tfidf_features)
+    sk_pipe, processed_features = get_inference_pipeline(rf_config, args.max_tfidf_features) #inference pipeline is build here
 
     # Then fit it to the X_train, y_train data
     logger.info("Fitting")
 
     ######################################
+    sk_pipe.fit(X_train, y_train) #fitting the pipeline
     # Fit the pipeline sk_pipe by calling the .fit method on X_train and y_train
     # YOUR CODE HERE
     ######################################
@@ -95,8 +96,9 @@ def go(args):
     ######################################
     # Save the sk_pipe pipeline as a mlflow.sklearn model in the directory "random_forest_dir"
     # HINT: use mlflow.sklearn.save_model
-    mlflow.sklearn.save_model(
-        # YOUR CODE HERE
+    mlflow.sklearn.save_model( #source: https://mlflow.org/docs/latest/api_reference/python_api/mlflow.sklearn.html
+        sk_pipe, 
+        random_forest_dir,
         input_example = X_train.iloc[:5]
     )
     ######################################
